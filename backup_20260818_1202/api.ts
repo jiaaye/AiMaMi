@@ -153,16 +153,3 @@ export const api = {
   getSystemInfo: () =>
     invoke<{ os: string; osVersion: string; arch: string; hostname: string }>("get_system_info"),
 };
-
-  // MiMo and Protocol support
-  testMimoConnectivity: (apiKey?: string) =>
-    invoke<CoreEnvelope<ApiProxyTestPayload>>("test_mimo_connectivity", { apiKey }),
-
-  testProtocolSupport: (providerType: ApiProviderType, customUrl?: string, protocol: string = "responses", apiKey?: string) =>
-    invoke<CoreEnvelope<ApiProtocolTestPayload>>("test_protocol_support", { providerType, customUrl, protocol, apiKey }),
-
-  testProviderSupport: (providerType: ApiProviderType, customUrl?: string, apiKey?: string) =>
-    invoke<CoreEnvelope<ApiProviderTestPayload>>("test_provider_support", { providerType, customUrl, apiKey }),
-
-  getAvailableModels: (providerType: ApiProviderType, customUrl?: string, apiKey?: string) =>
-    invoke<CoreEnvelope<string[]>>("get_available_models", { providerType, customUrl, apiKey }),

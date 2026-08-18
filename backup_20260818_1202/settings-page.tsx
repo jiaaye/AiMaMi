@@ -34,7 +34,6 @@ import { useBusyAction } from "@/hooks/use-busy-action";
 import { isMacPlatform } from "@/lib/platform";
 import { ApiProxyDialog } from "@/components/runtime/api-proxy-dialog";
 
-import { MimoApiTest } from "@/components/mimo-api-test";
 type SnapshotEnvelope = Awaited<ReturnType<typeof api.loadSnapshot>>;
 interface SettingsPageProps {
   theme: Theme;
@@ -537,7 +536,3 @@ function SettingSegmentedControl({
     </div>
   );
 }
-
-      <div className="mt-6">
-        <MimoApiTest />
-      </div>

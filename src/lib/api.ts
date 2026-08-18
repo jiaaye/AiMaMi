@@ -24,6 +24,8 @@ import type {
   ApiProviderType,
   ApiProtocolTestPayload,
   ApiProviderTestPayload,
+  ApiProviderConfig,
+  ApiProviderListPayload,
 } from "@/types";
 import { isTauriRuntime } from "@/lib/tauri-runtime";
 
@@ -194,4 +196,17 @@ export const api = {
 
   getAvailableModels: (providerType: ApiProviderType, customUrl?: string, apiKey?: string) =>
     invoke<CoreEnvelope<string[]>>("get_available_models", { providerType, customUrl, apiKey }),
+
+  // MiMo provider persistence (responses-native; MiMo wire protocol is "responses")
+  listApiProviders: () =>
+    invoke<CoreEnvelope<ApiProviderListPayload>>("list_api_providers"),
+
+  upsertApiProvider: (config: ApiProviderConfig) =>
+    invoke<CoreEnvelope<ApiProviderListPayload>>("upsert_api_provider", { config }),
+
+  setActiveApiProvider: (providerType: ApiProviderType, model?: string) =>
+    invoke<CoreEnvelope<ApiProviderListPayload>>("set_active_api_provider", {
+      providerType,
+      model,
+    }),
 };

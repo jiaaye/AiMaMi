@@ -20,7 +20,7 @@ impl ApiProvider {
         match self {
             ApiProvider::OpenAI => "https://api.openai.com",
             ApiProvider::DeepSeek => "https://api.deepseek.com",
-            ApiProvider::MiMo => "https://api.mimo.mi.com",
+            ApiProvider::MiMo => "https://token-plan-cn.xiaomimimo.com",
             ApiProvider::Custom(url) => url,
         }
     }

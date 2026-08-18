@@ -9,32 +9,32 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
+    - uses: actions/checkout@v4
+
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
-        
+        node-version: '20'
+
     - name: Install pnpm
       run: npm install -g pnpm
-      
+
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
-      
+
     - name: Install dependencies
       run: pnpm install
-      
+
     - name: Build frontend
       run: pnpm build
-      
+
     - name: Build Tauri app
       run: pnpm tauri build
-      
+
     - name: Upload Windows installer
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-installer
         path: src-tauri/target/release/bundle/msi/*.msi

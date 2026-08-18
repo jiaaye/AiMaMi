@@ -1,0 +1,5 @@
+# pnpm 11+: minimumReleaseAge is read from pnpm-workspace.yaml (the .npmrc
+# key is ignored on pnpm >= 11). Set to 0 so CI installs don't reject
+# recently-published lockfile entries (e.g. baseline-browser-mapping).
+# Unit: minutes. 0 = no minimum age.
+minimumReleaseAge: 0

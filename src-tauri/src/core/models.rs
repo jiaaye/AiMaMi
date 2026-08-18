@@ -922,6 +922,8 @@ pub enum CoreError {
 
     #[error("Invalid data: {0}")]
     InvalidData(String),
+    #[error("API error: {0}")]
+    Api(String),
 
     #[error("Operation failed: {0}")]
     OperationFailed(String),
@@ -935,3 +937,87 @@ impl Serialize for CoreError {
         serializer.serialize_str(&self.to_string())
     }
 }
+
+// ---------------------------------------------------------------------------
+// API Provider and Protocol Support
+// ---------------------------------------------------------------------------
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[serde(rename_all = "camelCase")]
+pub enum ApiProviderType {
+    OpenAI,
+    DeepSeek,
+    MiMo,
+    Custom,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ApiProviderConfig {
+    pub provider_type: ApiProviderType,
+    pub name: String,
+    pub base_url: String,
+    pub api_key: Option<String>,
+    pub supports_responses: bool,
+    pub supports_chat_completions: bool,
+    pub model_list: Vec<String>,
+    pub default_model: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ApiProtocolTestPayload {
+    pub provider: ApiProviderType,
+    pub protocol: String, // "responses" or "chat_completions"
+    pub supported: bool,
+    pub endpoint: String,
+    pub status_code: Option<i32>,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ApiProviderTestPayload {
+    pub provider: ApiProviderType,
+    pub reachable: bool,
+    pub supports_responses: bool,
+    pub supports_chat_completions: bool,
+    pub models_available: bool,
+    pub message: String,
+    pub protocol_tests: Vec<ApiProtocolTestPayload>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ApiProviderListPayload {
+    pub providers: Vec<ApiProviderConfig>,
+    pub active_provider: Option<ApiProviderType>,
+    pub active_model: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ApiRequestPayload {
+    pub provider: ApiProviderType,
+    pub model: String,
+    pub messages: Vec<serde_json::Value>,
+    pub protocol: String, // "responses" or "chat_completions"
+    pub max_tokens: Option<u32>,
+    pub temperature: Option<f32>,
+    pub stream: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ApiResponsePayload {
+    pub success: bool,
+    pub response: Option<serde_json::Value>,
+    pub error: Option<String>,
+    pub usage: Option<serde_json::Value>,
+    pub model: Option<String>,
+    pub provider: ApiProviderType,
+    pub protocol: String,
+}
+
+    #[error("API error: {0}")]
+    Api(String),

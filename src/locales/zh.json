@@ -293,8 +293,6 @@
     "openApplications": "打开应用程序文件夹",
     "retry": "重试",
     "skipThisTime": "暂时跳过，稍后再试"
-  }
-}
   },
   "mimoApiTest": {
     "title": "MiMo API 测试",

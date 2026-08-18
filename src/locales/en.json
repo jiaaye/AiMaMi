@@ -293,8 +293,6 @@
     "openApplications": "Open Applications Folder",
     "retry": "Retry",
     "skipThisTime": "Skip for now, try later"
-  }
-}
   },
   "mimoApiTest": {
     "title": "MiMo API Test",

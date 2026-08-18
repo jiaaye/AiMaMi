@@ -1,0 +1,52 @@
+name: Build AiMaMi with MiMo Support
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  build-tauri:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest] # Only build for Windows
+    
+    runs-on: ${{ matrix.platform }}
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*'
+        
+    - name: Install Rust stable
+      uses: dtolnay/rust-toolchain@stable
+      
+    - name: Install dependencies (windows only)
+      if: matrix.platform == 'windows-latest'
+      run: |
+        cargo install tauri-cli
+        npm install -g pnpm
+      
+    - name: Install frontend dependencies
+      run: pnpm install
+      
+    - name: Build Tauri app
+      run: pnpm tauri build
+      
+    - name: Upload Windows Installer
+      uses: actions/upload-artifact@v4
+      if: matrix.platform == 'windows-latest'
+      with:
+        name: windows-installer
+        path: src-tauri/target/release/bundle/msi/*.msi
+        
+    - name: Upload Windows Executable
+      uses: actions/upload-artifact@v4
+      if: matrix.platform == 'windows-latest'
+      with:
+        name: windows-exe
+        path: src-tauri/target/release/AiMaMi.exe

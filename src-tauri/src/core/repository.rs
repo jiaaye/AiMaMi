@@ -1201,3 +1201,50 @@ mod tests {
         let _ = fs::remove_dir_all(codex_home);
     }
 }
+
+    /// Test MiMo API connectivity
+    pub fn test_mimo_connectivity(
+        &self,
+        api_key: Option<&str>,
+    ) -> Result<CoreEnvelope<ApiProxyTestPayload>, CoreError> {
+        let payload = crate::core::api_client::test_mimo_connectivity(api_key);
+        Ok(CoreEnvelope::ok(payload))
+    }
+
+    /// Test responses protocol support for a provider
+    pub fn test_protocol_support(
+        &self,
+        provider_type: &super::models::ApiProviderType,
+        custom_url: Option<&str>,
+        protocol: &str,
+        api_key: Option<&str>,
+    ) -> Result<CoreEnvelope<super::models::ApiProtocolTestPayload>, CoreError> {
+        let provider = crate::core::api_client::provider_type_to_provider(provider_type, custom_url);
+        let payload = crate::core::api_client::test_protocol_support(&provider, protocol, api_key);
+        Ok(CoreEnvelope::ok(payload))
+    }
+
+    /// Test comprehensive provider support
+    pub fn test_provider_support(
+        &self,
+        provider_type: &super::models::ApiProviderType,
+        custom_url: Option<&str>,
+        api_key: Option<&str>,
+    ) -> Result<CoreEnvelope<super::models::ApiProviderTestPayload>, CoreError> {
+        let payload = crate::core::api_client::test_provider_support(provider_type, custom_url, api_key);
+        Ok(CoreEnvelope::ok(payload))
+    }
+
+    /// Get available models for a provider
+    pub fn get_available_models(
+        &self,
+        provider_type: &super::models::ApiProviderType,
+        custom_url: Option<&str>,
+        api_key: Option<&str>,
+    ) -> Result<CoreEnvelope<Vec<String>>, CoreError> {
+        let provider = crate::core::api_client::provider_type_to_provider(provider_type, custom_url);
+        let config = super::models::ApiProxyConfigPayload::default();
+        let models = crate::core::api_client::get_available_models(&provider, api_key, &config)
+            .map_err(|e| CoreError::Api(e))?;
+        Ok(CoreEnvelope::ok(models))
+    }

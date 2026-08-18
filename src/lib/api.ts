@@ -21,6 +21,9 @@ import type {
   SkillDeleteBackupPayload,
   CustomInstructionPreviewPayload,
   CustomInstructionStatePayload,
+  ApiProviderType,
+  ApiProtocolTestPayload,
+  ApiProviderTestPayload,
 } from "@/types";
 import { isTauriRuntime } from "@/lib/tauri-runtime";
 
@@ -84,8 +87,26 @@ export const api = {
   loadMcpServers: () =>
     invoke<CoreEnvelope<McpServerListPayload>>("load_mcp_servers"),
 
-  upsertMcpServer: (name: string, config: Record<string, unknown>) =>
-    invoke<CoreEnvelope<McpServerMutationPayload>>("upsert_mcp_server", { name, config }),
+  upsertMcpServer: (input: {
+    name: string;
+    transport: string;
+    enabled: boolean;
+    command?: string;
+    args: string[];
+    url?: string;
+    headers: Record<string, string>;
+    environment: Record<string, string>;
+  }) =>
+    invoke<CoreEnvelope<McpServerMutationPayload>>("upsert_mcp_server", {
+      name: input.name,
+      transport: input.transport,
+      enabled: input.enabled,
+      command: input.command,
+      args: input.args,
+      url: input.url,
+      headers: input.headers,
+      environment: input.environment,
+    }),
 
   setMcpServerEnabled: (name: string, enabled: boolean) =>
     invoke<CoreEnvelope<McpServerMutationPayload>>("set_mcp_server_enabled", { name, enabled }),
@@ -114,23 +135,31 @@ export const api = {
   loadCustomInstructionState: () =>
     invoke<CoreEnvelope<CustomInstructionStatePayload>>("load_custom_instruction_state"),
 
-  previewCustomInstructionApply: (templateId: string, content: string) =>
+  previewCustomInstructionApply: (content: string) =>
     invoke<CoreEnvelope<CustomInstructionPreviewPayload>>("preview_custom_instruction_apply", {
-      templateId,
       content,
     }),
 
-  applyCustomInstruction: (templateId: string, content: string) =>
+  applyCustomInstruction: (params: {
+    content: string;
+    templateCode?: string;
+    templateTitle?: string;
+    source?: string;
+  }) =>
     invoke<CoreEnvelope<CustomInstructionStatePayload>>("apply_custom_instruction", {
-      templateId,
-      content,
+      content: params.content,
+      templateCode: params.templateCode,
+      templateTitle: params.templateTitle,
+      source: params.source,
     }),
 
   clearCustomInstructionBlock: () =>
     invoke<CoreEnvelope<CustomInstructionStatePayload>>("clear_custom_instruction_block"),
 
-  rollbackCustomInstruction: () =>
-    invoke<CoreEnvelope<CustomInstructionStatePayload>>("rollback_custom_instruction"),
+  rollbackCustomInstruction: (historyId: string) =>
+    invoke<CoreEnvelope<CustomInstructionStatePayload>>("rollback_custom_instruction", {
+      historyId,
+    }),
 
   hasNotch: () =>
     invoke<boolean>("has_notch").catch(() => false),
@@ -152,7 +181,6 @@ export const api = {
 
   getSystemInfo: () =>
     invoke<{ os: string; osVersion: string; arch: string; hostname: string }>("get_system_info"),
-};
 
   // MiMo and Protocol support
   testMimoConnectivity: (apiKey?: string) =>
@@ -166,3 +194,4 @@ export const api = {
 
   getAvailableModels: (providerType: ApiProviderType, customUrl?: string, apiKey?: string) =>
     invoke<CoreEnvelope<string[]>>("get_available_models", { providerType, customUrl, apiKey }),
+};

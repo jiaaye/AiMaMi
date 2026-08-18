@@ -30,3 +30,35 @@ pnpm-debug.log*
 
 # TypeScript
 *.tsbuildinfo
+
+# Local workspace memory (not part of source)
+.workbuddy/
+
+# Build/integration clutter from remote working tree (docs, helpers, archives)
+*.tar.gz
+AiMaMi-MiMo-Support/
+build-windows.bat
+CHANGES_SUMMARY.md
+DOWNLOAD*.md
+EXTRACTION_GUIDE.md
+FILE_LIST.md
+FINAL_*.md
+IMPLEMENTATION_SUMMARY.md
+INSTALLATION_VERSION_GUIDE.md
+INTEGRATE_MIMO_CHANGES.md
+MANUAL_INTEGRATION_GUIDE.md
+MIMO_SUPPORT_README.md
+PROJECT_COMPLETION.md
+PROJECT_SUMMARY.md
+QUICK_START*.md
+README_INTEGRATION.md
+README_MIMO_SUPPORT.md
+README_SOURCE_CODE.md
+SIMPLE_MANUAL_GUIDE.md
+SIMPLE_SOLUTION.md
+SOURCE_CODE_INTEGRATION.md
+WINDOWS_BUILD_GUIDE.md
+integrate-*.bat
+integrate-*.ps1
+test_api_client.rs
+test_*.js

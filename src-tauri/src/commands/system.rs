@@ -311,3 +311,84 @@ pub fn open_path(path: String) -> Result<(), String> {
     }
     Ok(())
 }
+
+#[tauri::command]
+pub async fn test_mimo_connectivity(
+    app: AppHandle,
+    api_key: Option<String>,
+) -> Result<CoreEnvelope<ApiProxyTestPayload>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let repo_state = app.state::<Mutex<Repository>>();
+        let repo = repo_state.lock().map_err(|e| e.to_string())?;
+        let payload = repo.test_mimo_connectivity(api_key.as_deref())
+            .map_err(|e| e.to_string())?;
+        Ok(payload)
+    })
+    .await
+    .map_err(|e| format!("Blocking command task failed: {e}"))?
+}
+
+#[tauri::command]
+pub async fn test_protocol_support(
+    app: AppHandle,
+    provider_type: crate::core::models::ApiProviderType,
+    custom_url: Option<String>,
+    protocol: String,
+    api_key: Option<String>,
+) -> Result<CoreEnvelope<crate::core::models::ApiProtocolTestPayload>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let repo_state = app.state::<Mutex<Repository>>();
+        let repo = repo_state.lock().map_err(|e| e.to_string())?;
+        let payload = repo.test_protocol_support(
+            &provider_type,
+            custom_url.as_deref(),
+            &protocol,
+            api_key.as_deref(),
+        ).map_err(|e| e.to_string())?;
+        Ok(payload)
+    })
+    .await
+    .map_err(|e| format!("Blocking command task failed: {e}"))?
+}
+
+#[tauri::command]
+pub async fn test_provider_support(
+    app: AppHandle,
+    provider_type: crate::core::models::ApiProviderType,
+    custom_url: Option<String>,
+    api_key: Option<String>,
+) -> Result<CoreEnvelope<crate::core::models::ApiProviderTestPayload>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let repo_state = app.state::<Mutex<Repository>>();
+        let repo = repo_state.lock().map_err(|e| e.to_string())?;
+        let payload = repo.test_provider_support(
+            &provider_type,
+            custom_url.as_deref(),
+            api_key.as_deref(),
+        ).map_err(|e| e.to_string())?;
+        Ok(payload)
+    })
+    .await
+    .map_err(|e| format!("Blocking command task failed: {e}"))?
+}
+
+#[tauri::command]
+pub async fn get_available_models(
+    app: AppHandle,
+    provider_type: crate::core::models::ApiProviderType,
+    custom_url: Option<String>,
+    api_key: Option<String>,
+) -> Result<CoreEnvelope<Vec<String>>, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let repo_state = app.state::<Mutex<Repository>>();
+        let repo = repo_state.lock().map_err(|e| e.to_string())?;
+        let payload = repo.get_available_models(
+            &provider_type,
+            custom_url.as_deref(),
+            api_key.as_deref(),
+        ).map_err(|e| e.to_string())?;
+        Ok(payload)
+    })
+    .await
+    .map_err(|e| format!("Blocking command task failed: {e}"))?
+}

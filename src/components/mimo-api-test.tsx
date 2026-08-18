@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { useBusyAction } from "@/hooks/use-busy-action";
-import { Loader2, CheckCircle, XCircle, Zap } from "lucide-react";
+import { CheckCircle, XCircle, Zap } from "lucide-react";
 
 interface MimoApiTestProps {
   className?: string;
@@ -33,7 +33,7 @@ export function MimoApiTest({ className }: MimoApiTestProps) {
       return result;
     },
     onSuccess: (result) => {
-      setTestResult(result);
+      setTestResult(result.data);
       toast({
         title: t("mimoApiTest.success"),
         description: result.message,
@@ -55,6 +55,7 @@ export function MimoApiTest({ className }: MimoApiTestProps) {
       return result;
     },
     onSuccess: (result) => {
+      const data = result.data;
       setTestResult((prev) => {
         if (!prev) return prev;
         const updated = { ...prev };
@@ -62,11 +63,11 @@ export function MimoApiTest({ className }: MimoApiTestProps) {
           (t) => t.protocol === "responses"
         );
         if (existingIndex >= 0) {
-          updated.protocolTests[existingIndex] = result;
+          updated.protocolTests[existingIndex] = data;
         } else {
-          updated.protocolTests.push(result);
+          updated.protocolTests.push(data);
         }
-        updated.supportsResponses = result.supported;
+        updated.supportsResponses = data.supported;
         return updated;
       });
       toast({
@@ -127,22 +128,24 @@ export function MimoApiTest({ className }: MimoApiTestProps) {
 
         <div className="flex gap-2">
           <Button
-            onClick={() => testMimoAction.wrap(() => testMimoMutation.mutateAsync())}
-            disabled={testMimoAction.isBusy}
+            onClick={() => testMimoAction.run(() => testMimoMutation.mutateAsync())}
+            disabled={testMimoAction.busy}
           >
-            <ButtonBusyContent isBusy={testMimoAction.isBusy}>
-              {t("mimoApiTest.testMimo")}
-            </ButtonBusyContent>
+            <ButtonBusyContent
+              busy={testMimoAction.busy}
+              idleLabel={t("mimoApiTest.testMimo")}
+            />
           </Button>
 
           <Button
             variant="outline"
-            onClick={() => testResponsesAction.wrap(() => testResponsesMutation.mutateAsync())}
-            disabled={testResponsesAction.isBusy}
+            onClick={() => testResponsesAction.run(() => testResponsesMutation.mutateAsync())}
+            disabled={testResponsesAction.busy}
           >
-            <ButtonBusyContent isBusy={testResponsesAction.isBusy}>
-              {t("mimoApiTest.testResponses")}
-            </ButtonBusyContent>
+            <ButtonBusyContent
+              busy={testResponsesAction.busy}
+              idleLabel={t("mimoApiTest.testResponses")}
+            />
           </Button>
         </div>
 

@@ -133,6 +133,13 @@ pub fn run() {
             commands::hotspot::set_hotspot_enabled,
             commands::hotspot::focus_main_window,
             commands::hotspot::hotspot_ready,
+            commands::provider::test_mimo_connectivity,
+            commands::provider::test_provider_support,
+            commands::provider::test_protocol_support,
+            commands::provider::get_available_models,
+            commands::provider::list_api_providers,
+            commands::provider::upsert_api_provider,
+            commands::provider::set_active_api_provider,
         ])
         .build(tauri::generate_context!())
         .expect("error while building AiMaMi");
